@@ -1,0 +1,42 @@
+# -------- EC2 Instance Setup --------
+# Connect from your local machine to the EC2 instance:
+ssh -i elastic-key.pem ec2-user@54.234.15.24
+
+# Once connected to the EC2 terminal, run the following:
+
+# -------- System Update --------
+sudo yum update -y
+
+# -------- Apache Web Server Installation --------
+sudo yum install httpd -y
+sudo systemctl start httpd
+sudo systemctl enable httpd
+
+# -------- Test Apache Web Server --------
+# From your local machine browser:
+# Visit: http://54.234.15.24
+
+# Or test inside EC2:
+curl http://localhost
+
+# -------- stress-ng Installation (CPU Load Testing) --------
+# Enable EPEL repository
+sudo amazon-linux-extras enable epel
+sudo yum install epel-release -y
+
+# Install stress-ng
+sudo yum install stress-ng -y
+
+# Run stress test (2 vCPUs for 5 minutes)
+stress-ng --cpu 2 --timeout 300s
+
+# -------- Monitoring (Built-in CloudWatch) --------
+# Navigate to AWS EC2 → Instances → Monitoring tab
+# Observe CPUUtilization spike during stress-ng execution
+
+# -------- Optional Diagnostic Commands --------
+# Check live CPU stats (inside EC2)
+top
+
+# Check system logs
+sudo dmesg | less
